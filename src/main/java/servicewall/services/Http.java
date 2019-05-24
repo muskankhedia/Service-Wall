@@ -2,10 +2,9 @@ package servicewall.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.io.IOException;
-import java.util.Scanner;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,7 +16,7 @@ public class Http {
     private final short SEARCH_QUERY_NUMBER = 20;
 
     // respond to google request with the help of Jsoup
-    public ArrayList<Map<String, String>> fetchFromGoogleSearch(String query) throws IOException, NullPointerException {
+    public ArrayList<LinkedHashMap<String, String>> fetchFromGoogleSearch(String query) throws IOException, NullPointerException {
 
         String searchTerm = query;
         int num = SEARCH_QUERY_NUMBER;
@@ -27,10 +26,10 @@ public class Http {
         Document doc = Jsoup.connect(searchURL).userAgent("Mozilla/5.0").get();
 
         Elements results = doc.select("h3.r > a");
-        ArrayList<Map<String, String>> response = new ArrayList<Map<String, String>>();
+        ArrayList<LinkedHashMap<String, String>> response = new ArrayList<LinkedHashMap<String, String>>();
 
         for (Element result : results) {
-            HashMap<String, String> searchedResults = new HashMap<String, String>();
+            LinkedHashMap<String, String> searchedResults = new LinkedHashMap<String, String>();
             String linkHref = result.attr("href");
             String linkText = result.text();
             searchedResults.put("text", linkText);
@@ -38,7 +37,6 @@ public class Http {
             System.out.println("Text::" + linkText + ", URL::" + linkHref.substring(6, linkHref.indexOf("&")));
             response.add(searchedResults);
         }
-        System.out.println(response);
         return response;
 
     }
