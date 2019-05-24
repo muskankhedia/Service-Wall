@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class WatchProcesses {
+public class ProcessesActivity {
 
     private final String[] CMD_CURRENTLY_RUNNING_PROCESS = {"lsof", "-p", ""};
     private final String LINE_SEPERATOR = "%%%";
@@ -168,3 +168,4 @@ public class WatchProcesses {
     }
 
 }
+
