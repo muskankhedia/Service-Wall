@@ -17,8 +17,8 @@ public class Processes {
         BufferedReader br = new BufferedReader(new InputStreamReader(currently.getInputStream()));
 
         // skip first line
-        String lines = br.readLine(), allLines="";
-        short c=0;
+        String lines = br.readLine(), allLines = "";
+        short c = 0;
         boolean resumeBuffer = false, miss = true;
 
         try {
@@ -27,9 +27,9 @@ public class Processes {
                 if (lines.trim().equals("")) {
                     resumeBuffer = !resumeBuffer;
                     c++;
-                    if (c==1)
+                    if (c == 1)
                         continue;
-                    else if (c==2)
+                    else if (c == 2)
                         break;
                 }
                 if (resumeBuffer && !miss) {
@@ -37,7 +37,9 @@ public class Processes {
                 } else
                     miss = !miss;
             }
-        } catch (NullPointerException e) {;}
+        } catch (NullPointerException e) {
+            ;
+        }
 
         String[] diffLines = allLines.split(this.LINE_SEPERATOR);
         ArrayList<LinkedHashMap<String, String>> pureCmds = new ArrayList<LinkedHashMap<String, String>>();
@@ -45,10 +47,10 @@ public class Processes {
         for (String i : diffLines) {
             String[] cmds = i.split(" ");
 
-            LinkedHashMap<String, String> cmdsWithTags= new LinkedHashMap<String, String>();
+            LinkedHashMap<String, String> cmdsWithTags = new LinkedHashMap<String, String>();
             short count = 0;
-            for(String j : cmds) {
-                if(!j.trim().equals("")) {
+            for (String j : cmds) {
+                if (!j.trim().equals("")) {
                     ++count;
                     switch (count) {
                         case 1:
@@ -90,12 +92,12 @@ public class Processes {
                         default:
                             System.err.printf("%s", "out of fields");
                     }
-                    pureCmds.add(cmdsWithTags);
                 }
             }
+            System.out.println(cmdsWithTags);
+            pureCmds.add(cmdsWithTags);
         }
         return pureCmds;
 
     }
-
 }
