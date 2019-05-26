@@ -5,18 +5,10 @@ import java.util.*;
 
 public class ServiceResources {
 
-    private String processLine;
-    private String processLineAll;
-    private String separator;
-    public String[] processCurrentArray;
-    public List<List<String>> processCurrentTrimmed;
-    public List<Integer> pidLists;
-    //    private String processDetails;
-    public String[] processDetailsArray;
-    public List processDetailsArrayAll;
-    private String processDetailsAll;
-    public List processDetailsArrayAllStringified;
-    public List<Map<String, String>> psDetailMap;
+    private String processLine, separator, processDetailsAll;
+    private String[] processDetailsArray, cpu_mem_process_cmd = {"ps", "-p", "", "-o", "%cpu,%mem,cmd"};
+    private List processDetailsArrayAll, processDetailsArrayAllStringified;
+    private List<Map<String, String>> psDetailMap;
 
     private Map<String,String> detailsToMaps(String[] d) {
         Map<String, String> processDetails = new LinkedHashMap<String, String>();
@@ -90,7 +82,8 @@ public class ServiceResources {
      * nonvoluntary_ctxt_switches:     0
      * */
 
-    public List<Map<String, String>> getProcessDetails_catProc(List<Integer> ps) throws IOException {
+    public List<Map<String, String>> getCompleteProcessDetails(List<Integer> ps) throws IOException {
+
         BufferedReader Br;
         for (int pid: ps) {
             ProcessBuilder prr = new ProcessBuilder("cat", "/proc/"+String.valueOf(pid)+"/status");
@@ -113,5 +106,55 @@ public class ServiceResources {
             this.psDetailMap.add(this.detailsToMaps(this.processDetailsArray));
         }
         return this.psDetailMap;
+
     }
+
+    public LinkedHashMap<String, String> getCPU_MEM_Process(int pid) throws IOException {
+
+        this.cpu_mem_process_cmd[2] = String.valueOf(pid);
+        ProcessBuilder process = new ProcessBuilder(this.cpu_mem_process_cmd);
+        Process pr = process.start();
+        BufferedReader br = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+        String line = br.readLine();
+        line = br.readLine();
+        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        String[] inArr = line.trim().split(" ", 4);
+        ArrayList arrL = new ArrayList();
+        for (String x : inArr) {
+            if (x.length() != 0)
+                arrL.add(x);
+        }
+        System.out.println(arrL);
+        map.put("cpu", arrL.get(0).toString());
+        map.put("mem", arrL.get(1).toString());
+        map.put("cmd", arrL.get(2).toString());
+        System.out.println(map);
+        return map;
+
+    }
+
+    public LinkedHashMap<String, String> getCPU_MEM_Process(String n) throws IOException {
+
+        this.cpu_mem_process_cmd[2] = "$(pidof " + n + ")";
+        ProcessBuilder process = new ProcessBuilder(this.cpu_mem_process_cmd);
+        Process pr = process.start();
+        BufferedReader br = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+        String line = br.readLine();
+        line = br.readLine();
+        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        String[] inArr = line.trim().split(" ", 4);
+        ArrayList arrL = new ArrayList();
+        for (String x : inArr) {
+            if (x.length() != 0)
+                arrL.add(x);
+        }
+        System.out.println(arrL);
+        map.put("cpu", arrL.get(0).toString());
+        map.put("mem", arrL.get(1).toString());
+        map.put("cmd", arrL.get(2).toString());
+        System.out.println(map);
+        return map;
+
+    }
+
 }
