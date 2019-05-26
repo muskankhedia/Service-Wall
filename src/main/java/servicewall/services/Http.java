@@ -16,10 +16,7 @@ public class Http {
     // respond to google request with the help of Jsoup
     public ArrayList < LinkedHashMap < String, String >> fetchFromGoogleSearch(String query) throws IOException, NullPointerException {
 
-        String searchTerm = query;
-        int num = SEARCH_QUERY_NUMBER;
-
-        String searchURL = GOOGLE_SEARCH_URL + "?q=" + searchTerm + "&num=" + this.SEARCH_QUERY_NUMBER;
+        String searchURL = GOOGLE_SEARCH_URL + "?q=" + query + "&num=" + this.SEARCH_QUERY_NUMBER;
         // without proper User-Agent, we will get 403 error
         Document doc = Jsoup.connect(searchURL).userAgent("Mozilla/5.0").get();
         // Elements results = doc.select("h3.r > a");
@@ -27,7 +24,7 @@ public class Http {
         ArrayList < LinkedHashMap < String, String >> response = new ArrayList < LinkedHashMap < String, String >> ();
         for (Element result: results) {
             LinkedHashMap < String, String > searchedResults = new LinkedHashMap < String, String > ();
-            String linkHref = result.attr("href").substring(6);
+            String linkHref = result.attr("href").substring(7);
             String linkText = result.text();
             searchedResults.put("text", linkText);
             searchedResults.put("link", linkHref);
@@ -35,6 +32,10 @@ public class Http {
         }
         return response;
 
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(new Http().fetchFromGoogleSearch("india"));
     }
 
 }
