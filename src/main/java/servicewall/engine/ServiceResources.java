@@ -6,12 +6,19 @@ import java.util.*;
 public class ServiceResources {
 
     private String processLine, separator, processDetailsAll;
-    private String[] processDetailsArray, cpu_mem_process_cmd = {"ps", "-p", "", "-o", "%cpu,%mem,cmd"};
+    private String[] processDetailsArray, cpu_mem_process_cmd = {
+            "ps",
+            "-p",
+            "",
+            "-o",
+            "%cpu,%mem,cmd"
+    };
     private List processDetailsArrayAll, processDetailsArrayAllStringified;
-    private List<Map<String, String>> psDetailMap;
+    private List < Map < String, String >> psDetailMap;
 
-    private Map<String,String> detailsToMaps(String[] d) {
-        Map<String, String> processDetails = new LinkedHashMap<String, String>();
+    private Map < String, String > detailsToMaps(String[] d) {
+
+        Map < String, String > processDetails = new LinkedHashMap < String, String > ();
         for (String x: d) {
             x.replaceAll(":", "%%%");
             try {
@@ -82,11 +89,11 @@ public class ServiceResources {
      * nonvoluntary_ctxt_switches:     0
      * */
 
-    public List<Map<String, String>> getCompleteProcessDetails(List<Integer> ps) throws IOException {
+    public List < Map < String, String >> getCompleteProcessDetails(List < Integer > ps) throws IOException {
 
         BufferedReader Br;
         for (int pid: ps) {
-            ProcessBuilder prr = new ProcessBuilder("cat", "/proc/"+String.valueOf(pid)+"/status");
+            ProcessBuilder prr = new ProcessBuilder("cat", "/proc/" + String.valueOf(pid) + "/status");
             Process prrRun = prr.start();
             Br = new BufferedReader(new InputStreamReader(prrRun.getInputStream()));
             try {
@@ -98,7 +105,9 @@ public class ServiceResources {
                     this.processDetailsAll += this.processLine.replaceAll(",", "|") + this.separator;
 
                 }
-            } catch (Exception e) {;}
+            } catch (Exception e) {
+                ;
+            }
             this.processDetailsArray = this.processDetailsAll.split(this.separator);
             this.processDetailsArrayAll.add(this.processDetailsArray);
             this.processDetailsArrayAllStringified.add(Arrays.toString(this.processDetailsArray));
@@ -109,7 +118,7 @@ public class ServiceResources {
 
     }
 
-    public LinkedHashMap<String, String> getCPU_MEM_Process(int pid) throws IOException {
+    public LinkedHashMap < String, String > getCPU_MEM_Process(int pid) throws IOException {
 
         this.cpu_mem_process_cmd[2] = String.valueOf(pid);
         ProcessBuilder process = new ProcessBuilder(this.cpu_mem_process_cmd);
@@ -117,10 +126,10 @@ public class ServiceResources {
         BufferedReader br = new BufferedReader(new InputStreamReader(pr.getInputStream()));
         String line = br.readLine();
         line = br.readLine();
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap < String, String > map = new LinkedHashMap < String, String > ();
         String[] inArr = line.trim().split(" ", 4);
         ArrayList arrL = new ArrayList();
-        for (String x : inArr) {
+        for (String x: inArr) {
             if (x.length() != 0)
                 arrL.add(x);
         }
@@ -133,7 +142,7 @@ public class ServiceResources {
 
     }
 
-    public LinkedHashMap<String, String> getCPU_MEM_Process(String n) throws IOException {
+    public LinkedHashMap < String, String > getCPU_MEM_Process(String n) throws IOException {
 
         this.cpu_mem_process_cmd[2] = "$(pidof " + n + ")";
         ProcessBuilder process = new ProcessBuilder(this.cpu_mem_process_cmd);
@@ -141,10 +150,10 @@ public class ServiceResources {
         BufferedReader br = new BufferedReader(new InputStreamReader(pr.getInputStream()));
         String line = br.readLine();
         line = br.readLine();
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap < String, String > map = new LinkedHashMap < String, String > ();
         String[] inArr = line.trim().split(" ", 4);
         ArrayList arrL = new ArrayList();
-        for (String x : inArr) {
+        for (String x: inArr) {
             if (x.length() != 0)
                 arrL.add(x);
         }

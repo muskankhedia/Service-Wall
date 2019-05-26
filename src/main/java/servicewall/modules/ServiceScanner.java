@@ -11,8 +11,8 @@ public class ServiceScanner {
 
     private final Processes ProcessesObject = new Processes();
     private final SystemConfig SystemConfigObject = new SystemConfig();
-    public ArrayList<LinkedHashMap<String, String>> currentProcesses;
-    public ArrayList<LinkedHashMap<String, String>> NON_ROOT_PROCESSES;
+    public ArrayList < LinkedHashMap < String, String >> currentProcesses;
+    public ArrayList < LinkedHashMap < String, String >> NON_ROOT_PROCESSES;
 
     protected void fetchCurrentProcesses() throws IOException {
 
@@ -21,13 +21,13 @@ public class ServiceScanner {
 
     }
 
-    protected ArrayList<LinkedHashMap<String, String>> filterRootProcesses(ArrayList<LinkedHashMap<String, String>> m) {
+    protected ArrayList < LinkedHashMap < String, String >> filterRootProcesses(ArrayList < LinkedHashMap < String, String >> m) {
         // currently, we assume the root processes to be authorized and free from all restrictions
 
-        ArrayList<LinkedHashMap<String, String>> filtered = new ArrayList<LinkedHashMap<String, String>>();
+        ArrayList < LinkedHashMap < String, String >> filtered = new ArrayList < LinkedHashMap < String, String >> ();
 
-        for(int i=0; i< m.size(); i++) {
-            LinkedHashMap<String, String> process = m.get(i);
+        for (int i = 0; i < m.size(); i++) {
+            LinkedHashMap < String, String > process = m.get(i);
             if (!process.get("user").equals("root")) {
                 filtered.add(process);
             }
@@ -45,7 +45,4 @@ public class ServiceScanner {
         return true;
 
     }
-
-
-
 }
