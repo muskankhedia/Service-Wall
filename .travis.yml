@@ -3,4 +3,6 @@ language: java
 install: true
 
 script:
-  - ./mvnw clean install
+  - mvn clean package
+  - cd scripts/
+  - ./run.sh
