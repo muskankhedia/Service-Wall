@@ -94,7 +94,6 @@ public class Processes {
                     }
                 }
             }
-            System.out.println(cmdsWithTags);
             pureCmds.add(cmdsWithTags);
         }
         return pureCmds;
