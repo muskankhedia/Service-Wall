@@ -1,4 +1,4 @@
-## Service-Wall
+## Service-Wall [![Build Status](https://travis-ci.com/Harkishen-Singh/Service-Wall.svg?branch=master)](https://travis-ci.com/Harkishen-Singh/Service-Wall)
 Monitors process / service activities and warns on suspicious behavior
 Linux has no record on how a system behaves or how to keep a record of various processes doing work in the background. 
 The user has absolutely no idea of what's going on in the background.
