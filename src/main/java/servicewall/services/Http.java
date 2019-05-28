@@ -24,18 +24,20 @@ public class Http {
         ArrayList < LinkedHashMap < String, String >> response = new ArrayList < LinkedHashMap < String, String >> ();
         for (Element result: results) {
             LinkedHashMap < String, String > searchedResults = new LinkedHashMap < String, String > ();
-            String linkHref = result.attr("href").substring(7);
-            String linkText = result.text();
-            searchedResults.put("text", linkText);
-            searchedResults.put("link", linkHref);
-            response.add(searchedResults);
+            String linkHref = result.select("div[class=BNeawe UPmit AP7Wnd]").text().replaceAll(" › ", "/");
+            String linkText = result.select("div[class=BNeawe vvjwJb AP7Wnd]").text();
+            if (!(linkHref.equals("")) && !(linkText.equals(""))){
+                searchedResults.put("text", linkText);
+                searchedResults.put("link", linkHref);
+                response.add(searchedResults);
+            }
         }
         return response;
 
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(new Http().fetchFromGoogleSearch("india"));
+        System.out.println(new Http().fetchFromGoogleSearch("systemd"));
     }
 
 }
