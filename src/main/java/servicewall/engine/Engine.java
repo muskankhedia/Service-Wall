@@ -3,10 +3,10 @@ package servicewall.engine;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.Scanner;
+
 import servicewall.modules.Processes;
 import servicewall.modules.ProcessVerify_Internet;
-import servicewall.engine.TerminateProcess;
 
 public class Engine {
 
@@ -14,7 +14,7 @@ public class Engine {
     private ProcessVerify_Internet ProcessVerifyObject = new ProcessVerify_Internet();
     private final TerminateProcess TerminateProcessObject = new TerminateProcess();
 
-    private ArrayList<LinkedHashMap<String, String>> SetRootProcesses = new ArrayList<LinkedHashMap<String, String>>(),
+    protected ArrayList<LinkedHashMap<String, String>> SetRootProcesses = new ArrayList<LinkedHashMap<String, String>>(),
         SetVerifiedProcesses = new ArrayList<LinkedHashMap<String, String>>(),
         SetUnVerifiedProcesses = new ArrayList<LinkedHashMap<String, String>>(),
         SetNonRootProcesses = new ArrayList<LinkedHashMap<String, String>>(),
@@ -24,14 +24,14 @@ public class Engine {
         SetAllProcesses = new ArrayList<LinkedHashMap<String, String>>(),
         SetProcessesBook = new ArrayList<LinkedHashMap<String, String>>();
 
-    private Boolean updateCurrentlyRunningProcesses() throws IOException {
+    protected Boolean updateCurrentlyRunningProcesses() throws IOException {
 
         this.SetAllProcesses = this.ProcessesObject.getCurrentlyRunningProcesses();
         return true;
 
     }
 
-    private Boolean updateCurrentlyRunningRootProcesses() throws IOException {
+    protected Boolean updateCurrentlyRunningRootProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
             if (instance.get("user") == "root") {
@@ -43,7 +43,7 @@ public class Engine {
 
     }
 
-    private Boolean initialiseUnVerifiedProcesses() throws IOException {
+    protected Boolean initialiseUnVerifiedProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
             if (instance.get("user") != "root") {
@@ -54,7 +54,7 @@ public class Engine {
 
     }
 
-    private Boolean updateCurrentlyRunningNonRootProcesses() throws IOException {
+    protected Boolean updateCurrentlyRunningNonRootProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
             if (instance.get("user") != "root") {
@@ -65,7 +65,7 @@ public class Engine {
 
     }
 
-    private Boolean updateCurrentlyRunningRootAndNonRootProcesses() throws IOException {
+    protected Boolean updateCurrentlyRunningRootAndNonRootProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
             if (instance.get("user") == "root") {
@@ -80,7 +80,7 @@ public class Engine {
     }
 
     // updateProcessesBook() updates SetProcessesBook which is a set of all processes with appropriate tags in their priority order
-    private void updateProcessesBook() {
+    protected void updateProcessesBook() {
 
         // re-initialise ProcessBook
         this.SetProcessesBook = new ArrayList<LinkedHashMap<String, String>>();
@@ -129,7 +129,7 @@ public class Engine {
 
     }
 
-    private void showProcessBook() {
+    protected void showProcessBook() {
 
         for (LinkedHashMap<String, String> inst : this.SetProcessesBook) {
             System.out.println(inst);
@@ -168,6 +168,48 @@ public class Engine {
 
     }
 
+}
+
+class CLI extends Engine {
+
+    private final Scanner Sc = new Scanner(System.in);
+
+    private void viewVerifiedProcesses() {
+        for (LinkedHashMap<String , String > x : this.SetVerifiedProcesses) {
+            System.out.println(x);
+        }
+    }
+
+    private void viewRootProcesses() {
+        for (LinkedHashMap<String , String > x : this.SetRootProcesses) {
+            System.out.println(x);
+        }
+    }
+
+    private void viewUnTrustedProcesses() {
+        for (LinkedHashMap<String , String > x : this.SetUnTrustedProcesses) {
+            System.out.println(x);
+        }
+    }
+
+    private void viewNonRootProcesses() {
+        for (LinkedHashMap<String , String > x : this.SetNonRootProcesses) {
+            System.out.println(x);
+        }
+    }
+
+    private void viewMaliciousProcesses() {
+        for (LinkedHashMap<String , String > x : this.SetMaliciousProcesses) {
+            System.out.println(x);
+        }
+    }
+
+    private void viewBlockedProcesses() {
+        for (LinkedHashMap<String , String > x : this.SetBlockedProcesses) {
+            System.out.println(x);
+        }
+    }
+
     public void service_wall_CLI(Engine mainObject) throws Exception {
 
         System.out.println("initialising Service-Wall ...");
@@ -178,13 +220,37 @@ public class Engine {
         System.out.println("initialising un-verified processes ...");
         mainObject.initialiseUnVerifiedProcesses();
 
-    }
+        while (true) {
 
-    public static void main(String[] args) throws Exception {
+            System.out.println("Functionalities :");
+            System.out.println("(a) View Process Book");
+            System.out.println("(b) View Verified Processes");
+            System.out.println("(c) View Root Processes");
+            System.out.println("(d) View UnTrusted Processes");
+            System.out.println("(e) View Non-Root Processes");
+            System.out.println("(f) View Malicious Processes");
+            System.out.println("(g) View Blocked Processes");;
+            System.out.println("(h) Exit CLI");
+            System.out.print(": ");
+            char choice = Sc.nextLine().charAt(0);
 
-        Engine mainObject = new Engine();
-        mainObject.service_wall_CLI(mainObject);
+            if (choice == 'h') {
+                break;
+            }
+
+            switch (choice) {
+                case 'a': this.showProcessBook();break;
+                case 'b': this.viewVerifiedProcesses();break;
+                case 'c': this.viewRootProcesses();break;
+                case 'd': this.viewUnTrustedProcesses();break;
+                case 'e': this.viewNonRootProcesses();break;
+                case 'f': this.viewMaliciousProcesses();break;
+                case 'g': this.viewBlockedProcesses();break;
+                default: System.out.println("wrong input. try again");
+            }
+        }
 
     }
 
 }
+
