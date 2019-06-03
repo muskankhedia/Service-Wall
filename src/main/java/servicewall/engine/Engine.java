@@ -8,6 +8,8 @@ import java.util.Scanner;
 import servicewall.modules.Processes;
 import servicewall.modules.ProcessVerify_Internet;
 
+import javax.sound.midi.SysexMessage;
+
 public class Engine {
 
     private Processes ProcessesObject = new Processes();
@@ -34,7 +36,7 @@ public class Engine {
     protected Boolean updateCurrentlyRunningRootProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
-            if (instance.get("user") == "root") {
+            if (instance.get("user").equals("root")) {
                 this.SetRootProcesses.add(instance);
                 this.SetVerifiedProcesses.add(instance);
             }
@@ -46,7 +48,7 @@ public class Engine {
     protected Boolean initialiseUnVerifiedProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
-            if (instance.get("user") != "root") {
+            if (!instance.get("user").equals("root")) {
                 this.SetNonRootProcesses.add(instance);
             }
         }
@@ -57,7 +59,7 @@ public class Engine {
     protected Boolean updateCurrentlyRunningNonRootProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
-            if (instance.get("user") != "root") {
+            if (!instance.get("user").equals("root")) {
                 this.SetNonRootProcesses.add(instance);
             }
         }
@@ -68,7 +70,7 @@ public class Engine {
     protected Boolean updateCurrentlyRunningRootAndNonRootProcesses() throws IOException {
 
         for(LinkedHashMap<String, String> instance : this.SetAllProcesses) {
-            if (instance.get("user") == "root") {
+            if (instance.get("user").equals("root")) {
                 this.SetRootProcesses.add(instance);
                 this.SetVerifiedProcesses.add(instance);
             } else {
@@ -95,9 +97,10 @@ public class Engine {
             this.SetProcessesBook.add(temp);
         }
 
-        if (this.SetUnTrustedProcesses.size() == 0 && this.SetMaliciousProcesses.size() == 0) {
+        if (this.SetUnTrustedProcesses.size() == 0 || this.SetMaliciousProcesses.size() == 0) {
+
             // add unVerified processes to ProcessBook
-            for (LinkedHashMap<String, String> inst : this.SetUnTrustedProcesses) {
+            for (LinkedHashMap<String, String> inst : this.SetNonRootProcesses) {
                 LinkedHashMap<String , String > temp = new LinkedHashMap<String, String>();
                 temp.put("command", inst.get("command"));
                 temp.put("pid", inst.get("pid"));
@@ -168,9 +171,39 @@ public class Engine {
 
     }
 
-}
+    public void clearScreen() throws IOException {
 
-class CLI extends Engine {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
+    }
+
+    public void Initiator() throws IOException {
+
+        this.clearScreen();
+        System.out.println("initialising service-wall ...");
+
+        System.out.println("updating currently running processes");
+        this.updateCurrentlyRunningProcesses();
+
+        System.out.println("updating currently root and non-root processes ...");
+        this.updateCurrentlyRunningRootAndNonRootProcesses();
+
+        System.out.println("initialising un-verified processes ...");
+        this.initialiseUnVerifiedProcesses();
+
+    }
+
+    public void updateBuffers() throws IOException {
+
+        System.out.printf("\nupdating buffer values ...");
+        this.updateCurrentlyRunningProcesses();
+        this.updateCurrentlyRunningRootAndNonRootProcesses();
+        this.initialiseUnVerifiedProcesses();
+        System.out.printf("done!\n");
+        this.clearScreen();
+
+    }
 
     private final Scanner Sc = new Scanner(System.in);
 
@@ -210,45 +243,50 @@ class CLI extends Engine {
         }
     }
 
-    public void service_wall_CLI(Engine mainObject) throws Exception {
-
-        System.out.println("initialising Service-Wall ...");
-        System.out.println("updating currently running processes ...");
-        mainObject.updateCurrentlyRunningProcesses();
-        System.out.println("updating currently root and non-root processes ...");
-        mainObject.updateCurrentlyRunningRootAndNonRootProcesses();
-        System.out.println("initialising un-verified processes ...");
-        mainObject.initialiseUnVerifiedProcesses();
+    public void service_wall_CLI() throws IOException {
 
         while (true) {
 
-            System.out.println("Functionalities :");
+            System.out.println("\nFunctionalities :");
             System.out.println("(a) View Process Book");
             System.out.println("(b) View Verified Processes");
             System.out.println("(c) View Root Processes");
             System.out.println("(d) View UnTrusted Processes");
             System.out.println("(e) View Non-Root Processes");
             System.out.println("(f) View Malicious Processes");
-            System.out.println("(g) View Blocked Processes");;
-            System.out.println("(h) Exit CLI");
+            System.out.println("(g) View Blocked Processes");
+            System.out.println("(h) Update all Buffers");
+            System.out.println("(i) List functionality modules");
+            System.out.println("(j) Exit CLI");
             System.out.print(": ");
             char choice = Sc.nextLine().charAt(0);
-
-            if (choice == 'h') {
+            if (choice == 'j') {
                 break;
             }
 
             switch (choice) {
-                case 'a': this.showProcessBook();break;
+                case 'a': this.updateProcessesBook();this.showProcessBook();break;
                 case 'b': this.viewVerifiedProcesses();break;
                 case 'c': this.viewRootProcesses();break;
                 case 'd': this.viewUnTrustedProcesses();break;
                 case 'e': this.viewNonRootProcesses();break;
                 case 'f': this.viewMaliciousProcesses();break;
                 case 'g': this.viewBlockedProcesses();break;
-                default: System.out.println("wrong input. try again");
+                case 'h': this.updateBuffers();break;
+                default: System.out.println("wrong input.");
             }
+            System.out.print("\nPress enter to continue");
+            System.in.read();
+            this.clearScreen();
         }
+
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        Engine obj = new Engine();
+        obj.Initiator();
+        obj.service_wall_CLI();
 
     }
 
