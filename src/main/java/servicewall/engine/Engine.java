@@ -243,22 +243,46 @@ public class Engine {
         }
     }
 
+    private void listFunctionalities_CLI() {
+        System.out.println("\tfunctionalities");
+        System.out.println("\t\t(a) Process Verification");
+        System.out.println("\t\t(b) Process Blocker");
+        System.out.println("\t\t(c) System Files Monitor");
+        System.out.print("\t\t: ");
+        char ch = Sc.nextLine().charAt(0);
+
+        switch (ch) {
+            case 'a':
+                System.out.println("\n\tinitiating process verification");
+                break;
+            case 'b':
+                System.out.println("\n\tinitiating process blocker");
+                break;
+            case 'c':
+                System.out.println("\n\tinitiating system files monitor");
+                break;
+
+            default:
+                System.out.println("\n\nwrong input. try again");
+        }
+    }
+
     public void service_wall_CLI() throws IOException {
 
         while (true) {
 
-            System.out.println("\nFunctionalities :");
-            System.out.println("(a) View Process Book");
-            System.out.println("(b) View Verified Processes");
-            System.out.println("(c) View Root Processes");
-            System.out.println("(d) View UnTrusted Processes");
-            System.out.println("(e) View Non-Root Processes");
-            System.out.println("(f) View Malicious Processes");
-            System.out.println("(g) View Blocked Processes");
-            System.out.println("(h) Update all Buffers");
-            System.out.println("(i) List functionality modules");
-            System.out.println("(j) Exit CLI");
-            System.out.print(": ");
+            System.out.println("\nTypes :");
+            System.out.println("\t(a) View Process Book");
+            System.out.println("\t(b) View Verified Processes");
+            System.out.println("\t(c) View Root Processes");
+            System.out.println("\t(d) View UnTrusted Processes");
+            System.out.println("\t(e) View Non-Root Processes");
+            System.out.println("\t(f) View Malicious Processes");
+            System.out.println("\t(g) View Blocked Processes");
+            System.out.println("\t(h) Update all Buffers");
+            System.out.println("\t(i) List functionality modules");
+            System.out.println("\t(j) Exit CLI");
+            System.out.print("\t: ");
             char choice = Sc.nextLine().charAt(0);
             if (choice == 'j') {
                 break;
@@ -273,6 +297,7 @@ public class Engine {
                 case 'f': this.viewMaliciousProcesses();break;
                 case 'g': this.viewBlockedProcesses();break;
                 case 'h': this.updateBuffers();break;
+                case 'i': this.listFunctionalities_CLI();break;
                 default: System.out.println("wrong input.");
             }
             System.out.print("\nPress enter to continue");
