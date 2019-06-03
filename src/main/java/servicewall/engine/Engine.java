@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
-
+import servicewall.engine.SystemFilesMonitor;
 import servicewall.modules.Processes;
 import servicewall.modules.ProcessVerify_Internet;
 
@@ -207,6 +207,8 @@ public class Engine {
 
     private final Scanner Sc = new Scanner(System.in);
 
+    private SystemFilesMonitor SystemFilesMonitorObject = new SystemFilesMonitor();
+
     private void viewVerifiedProcesses() {
         for (LinkedHashMap<String , String > x : this.SetVerifiedProcesses) {
             System.out.println(x);
@@ -243,6 +245,13 @@ public class Engine {
         }
     }
 
+    private void SystemFilesMonitorController() {
+
+        Thread SystemFilesMonitorThread = new Thread(SystemFilesMonitorObject);
+        SystemFilesMonitorThread.start();
+
+    }
+
     private void listFunctionalities_CLI() {
         System.out.println("\tfunctionalities");
         System.out.println("\t\t(a) Process Verification");
@@ -260,6 +269,7 @@ public class Engine {
                 break;
             case 'c':
                 System.out.println("\n\tinitiating system files monitor");
+                this.SystemFilesMonitorController();
                 break;
 
             default:
