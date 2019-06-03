@@ -25,22 +25,15 @@ public class ProcessVerify_Internet {
 
     public boolean verifyIfMaliciousProcessThroughGoogleCheck(String processName) throws IOException {
 
-        ArrayList<LinkedHashMap<String, String>> googleResults = this.HttpObject.fetchFromGoogleSearch(processName);
-        for (LinkedHashMap<String, String> resultQuery : googleResults) {
-            String text = resultQuery.get("text");
-            for (String malWord : this.maliciousKeywords) {
-                if (text.contains(malWord)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        final boolean isMalicious = verifyTheProcess(processName);
+        System.out.println("isMalicious:: "+ isMalicious);
+        return isMalicious;
 
     }
 
     public boolean verifyTheProcess(String process) throws IOException {
 
-        String searchURL = GOOGLE_SEARCH_URL + "?q=" + process + "&num=" + this.SEARCH_QUERY_NUMBER;
+        String searchURL = GOOGLE_SEARCH_URL + "?q=" + process + "+virus" + "&num=" + this.SEARCH_QUERY_NUMBER;
         // without proper User-Agent, we will get 403 error
         Document doc = Jsoup.connect(searchURL).userAgent("Mozilla/5.0").get();
         String data = doc.text();
@@ -50,9 +43,7 @@ public class ProcessVerify_Internet {
             return true;
 
         } else {
-
             ArrayList<LinkedHashMap<String, String>> googleResults = this.HttpObject.fetchFromGoogleSearch(process);
-
             for (LinkedHashMap<String, String> resultQuery : googleResults) {
                 String text = resultQuery.get("text");
                 String link = resultQuery.get("link");
@@ -60,41 +51,33 @@ public class ProcessVerify_Internet {
                                     // as it will be true if any malicious keyword will be found
 
                 try {
-
                     System.out.println("done");
                     doc = Jsoup.connect(link).userAgent("Mozilla/5.0").get();
                     String textContent=doc.text();
                     List<String> list = new ArrayList<String>(Arrays.asList(textContent.split(" . ")));
-//                    System.out.println("textContent:: "+list);
-
                     for (String temp : list) {
-
                         for (String malWord : this.maliciousKeywords) {
-                            if (temp.contains(malWord)) {
-                                if (containsIgnoreCase(temp, process)) {
-                                    System.out.println("malWord:: " + malWord);
-                                    System.out.println("temp:: " + temp);
-                                    check = true;
-                                    String[] words = temp.split(" ");
-                                    for (String word : words) {
-                                        if (word == "not" || word == "no" || word == "never" || word == "nothing") {
-                                            if (!check) {
-                                                check = true;
-                                                System.out.println("temp:: " + temp);
-                                            } else check = false;
-                                        }
+                            if (temp.contains(malWord) && containsIgnoreCase(temp, process)) {
+                                System.out.println("malWord:: " + malWord);
+                                System.out.println("temp:: " + temp);
+                                check = true;
+                                String[] words = temp.split(" ");
+                                for (String word : words) {
+                                    if (word == "not" || word == "no" || word == "never" || word == "nothing") {
+                                        if (!check) {
+                                            check = true;
+                                            System.out.println("temp:: " + temp);
+                                        } else check = false;
                                     }
-
-                                    if (check) count++;
-
-                                    for (String supWord : this.supportingKeywords) {
-                                        if (temp.contains(supWord)) {
-                                            check2 = true;
-                                        }
+                                }
+                                if (check) count++;
+                                for (String supWord : this.supportingKeywords) {
+                                    if (temp.contains(supWord)) {
+                                        check2 = true;
                                     }
-                                    if ((check && check2)) {
-                                        count++;
-                                    }
+                                }
+                                if ((check && check2)) {
+                                    count++;
                                 }
                             }
                         }
@@ -103,7 +86,6 @@ public class ProcessVerify_Internet {
                 catch (Exception e ) {
                     System.out.println("error");
                 }
-
             }
 
             System.out.println("count:: "+ count);
@@ -122,8 +104,8 @@ public class ProcessVerify_Internet {
     public static void main(String[] args) throws IOException {
 
         ProcessVerify_Internet p = new ProcessVerify_Internet();
-        final boolean systemd = p.verifyTheProcess("systemd");
-        System.out.println("Systemd:: "+ systemd);
+        final boolean isMalicious = p.verifyTheProcess("systemd");
+        System.out.println("isMalicious:: "+ isMalicious);
     }
 
 }
