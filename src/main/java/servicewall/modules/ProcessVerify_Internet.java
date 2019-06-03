@@ -13,18 +13,18 @@ public class ProcessVerify_Internet {
     protected final String[] maliciousKeywords = {"harm", "harmful", "danger", "malicious", "malware"};
     private String textResult;
 
-    public boolean verifyProcessThroughGoogleCheck(String processName) throws IOException {
+    public boolean verifyIfMaliciousProcessThroughGoogleCheck(String processName) throws IOException {
 
         ArrayList<LinkedHashMap<String, String>> googleResults = this.HttpObject.fetchFromGoogleSearch(processName);
         for (LinkedHashMap<String, String> resultQuery : googleResults) {
             String text = resultQuery.get("text");
             for (String malWord : this.maliciousKeywords) {
                 if (text.contains(malWord)) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
 
     }
 

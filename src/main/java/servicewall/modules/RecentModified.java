@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class RecentModified {
 
     private final String[] cmd = {"find", "/", "-cmin", ""};
+    public String username = "";
     private final String separator = "%%%";
 
     public ArrayList<String> getRecentlyModifiedFiles(int timeInMinutes) throws IOException, NullPointerException, InterruptedException {
