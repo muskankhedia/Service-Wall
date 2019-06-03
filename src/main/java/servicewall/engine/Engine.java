@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import servicewall.modules.Processes;
+import servicewall.modules.ProcessVerify_Internet;
+import servicewall.engine.TerminateProcess;
 
 public class Engine {
 
     private Processes ProcessesObject = new Processes();
+    private ProcessVerify_Internet ProcessVerifyObject = new ProcessVerify_Internet();
+    private final TerminateProcess TerminateProcessObject = new TerminateProcess();
 
     private ArrayList<LinkedHashMap<String, String>> SetRootProcesses = new ArrayList<LinkedHashMap<String, String>>(),
         SetVerifiedProcesses = new ArrayList<LinkedHashMap<String, String>>(),
@@ -59,6 +63,27 @@ public class Engine {
         }
         return true;
 
+    }
+
+    private void verifyMaliciousProcessesThroughtGoogleSearch(ArrayList<LinkedHashMap<String, String>> pr) throws IOException {
+        for (LinkedHashMap<String , String > inst : pr) {
+            boolean isMalicious = ProcessVerifyObject.verifyIfMaliciousProcessThroughGoogleCheck(inst.get("command").trim());
+            if (isMalicious) {
+                this.SetMaliciousProcesses.add(inst);
+                this.SetBlockedProcesses.add(inst);
+            }
+        }
+    }
+
+    private void blockMaliciousProcess(ArrayList<LinkedHashMap<String, String>> pr) {
+        for (LinkedHashMap<String, String> inst : pr ) {
+            String temp = inst.get("pid");
+            if (TerminateProcessObject.Block_Terinate_KillProcess(inst.get(temp))) {
+                System.out.printf("terminated process %s", temp);
+            } else {
+                System.out.printf("failed to terminate process %s", temp);
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException {
