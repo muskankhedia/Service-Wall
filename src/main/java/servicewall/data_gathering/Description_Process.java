@@ -29,14 +29,15 @@ public class Description_Process {
             }
         }
 
-        return Jsoup.parse(subStr).text();
+        String result =  Jsoup.parse(subStr).text();
+        return result;
 
     }
 
     private void iterateAllLinks() throws IOException {
 
         JSONArray processList = new JSONArray();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 1; i++) {
 
             String baseURL = "https://linux.die.net/man/";
 
@@ -55,7 +56,7 @@ public class Description_Process {
             for (Element result: results) {
                 Elements link = result.getElementsByTag("a");
                 String processName = link.text();
-                if (processName.equals("")){
+                if (!processName.equals("")){
                     JSONObject processData = new JSONObject();
                     JSONObject processObject = new JSONObject();
                     String searchURL = baseURL + "/" + processName;
