@@ -54,16 +54,16 @@ public class Description_Process {
                 baseURL = baseURL + "n";
             }
 
-            System.out.println("basesURL: " + baseURL);
+            System.out.println("baseURL: " + baseURL);
             Document doc = Jsoup.connect(baseURL).userAgent("Mozilla/5.0").get();
             Elements results = doc.select("dl > dt");
 
-            System.out.println("results:: " + results);
             for (Element result : results) {
-
                 Elements link = result.getElementsByTag("a");
                 String processName = link.text();
+                System.out.println("processname: "+ processName);
                 if (!processName.equals("")) {
+                    System.out.println("processname1: "+ processName);
                     if (processName.charAt(0) == initialLetter) {
                         JSONObject processData = new JSONObject();
                         JSONObject processObject = new JSONObject();
@@ -81,10 +81,13 @@ public class Description_Process {
                         //Write JSON file
                         String fileName  = "processdesc" + i + initialLetter + ".json";
                         try (FileWriter file = new FileWriter(fileName)) {
-                            initialLetter += 1 ;
+//                            initialLetter += 1 ;
                             file.write(processList.toJSONString());
                             file.flush();
                             processList = new JSONArray();
+                            while (!(initialLetter == processName.charAt(0))) {
+                                initialLetter += 1;
+                            }
                             if (processName.charAt(0) == initialLetter){
                                 JSONObject processData = new JSONObject();
                                 JSONObject processObject = new JSONObject();
